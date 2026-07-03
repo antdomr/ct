@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -343,6 +344,29 @@
     .pill.blue { color: var(--blue-2); background: rgba(38, 106, 166, 0.10); }
     .pill.red { color: #991b1b; background: #fee2e2; }
 
+
+    .simulated-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      border: 1px solid rgba(23, 191, 160, 0.30);
+      background: rgba(23, 191, 160, 0.10);
+      color: #0f766e;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    .simulated-label::before {
+      content: "ⓘ";
+      font-size: 14px;
+    }
+
     .cards {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -606,12 +630,13 @@
       <aside class="panel">
         <div class="panel-head">
           <div>
-            <h2>Vista para dirección</h2>
+            <h2>Vista ejecutiva hipotética</h2>
             <p>Indicadores simulados de un piloto controlado.</p>
           </div>
           <span class="pill blue">Agregado</span>
         </div>
         <div class="panel-body">
+          <div class="simulated-label">Datos 100% simulados para fines de conversación</div>
           <div class="cards">
             <div class="metric"><strong id="m1">428</strong><span>consultas asistidas</span></div>
             <div class="metric"><strong id="m2">71%</strong><span>consultas resueltas</span></div>
