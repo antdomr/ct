@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Conceptual — Asistente IA Comercial CT</title>
+  <style>
+    :root {
+      --bg: #F2F2F2;
+      --panel: #ffffff;
+      --panel-soft: #f7fbfd;
+      --text: #17324a;
+      --muted: #64748b;
+      --line: #d8e4ee;
+      --blue: #266AA6;
+      --blue-2: #1d5485;
+      --sky: #4E8BBF;
+      --cyan: #17BFA0;
+      --green: #17BFA0;
+      --amber: #d97706;
+      --red: #dc2626;
+      --shadow: 0 16px 40px rgba(38, 106, 166, 0.10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(38, 106, 166, 0.10), transparent 32%),
+        linear-gradient(180deg, #fbfdff 0%, var(--bg) 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    header {
+      padding: 26px clamp(18px, 4vw, 42px) 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue), var(--sky) 58%, var(--cyan));
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      letter-spacing: -0.07em;
+      box-shadow: 0 12px 26px rgba(38, 106, 166, 0.22);
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 4px 0 0;
+      font-size: clamp(24px, 4vw, 42px);
+      line-height: 1.03;
+      letter-spacing: -0.045em;
+    }
+
+    header p.description {
+      margin: 14px 0 0;
+      max-width: 1080px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
+    .tag {
+      border: 1px solid rgba(38, 106, 166, 0.24);
+      background: rgba(38, 106, 166, 0.08);
+      color: var(--blue-2);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-weight: 800;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    main {
+      padding: 24px clamp(18px, 4vw, 42px) 42px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .notice {
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .notice strong { color: var(--text); }
+    .notice .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: rgba(38, 106, 166, 0.10);
+      display: grid;
+      place-items: center;
+      color: var(--blue);
+      flex: 0 0 auto;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .step {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 15px;
+      min-height: 108px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -14px;
+      top: 43%;
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 20px;
+      z-index: 2;
+    }
+
+    .step small {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: rgba(38, 106, 166, 0.10);
+      color: var(--blue);
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .step h3 {
+      margin: 0 0 6px;
+      font-size: 14px;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(330px, 0.95fr) minmax(420px, 1.25fr) minmax(330px, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #f9fbff);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-head p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+
+    .panel-body { padding: 18px; }
+
+    .case-tabs {
+      display: grid;
+      gap: 10px;
+    }
+
+    button.case {
+      text-align: left;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+      transition: 0.16s ease;
+      width: 100%;
+    }
+
+    button.case:hover {
+      border-color: rgba(38, 106, 166, 0.45);
+      transform: translateY(-1px);
+    }
+
+    button.case.active {
+      border-color: rgba(38, 106, 166, 0.75);
+      background: rgba(38, 106, 166, 0.06);
+      box-shadow: 0 10px 24px rgba(38, 106, 166, 0.10);
+    }
+
+    .case strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .case span {
+      display: block;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.34;
+    }
+
+    .conversation {
+      display: grid;
+      gap: 13px;
+    }
+
+    .bubble {
+      border-radius: 18px;
+      padding: 14px 15px;
+      line-height: 1.42;
+      font-size: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .bubble.distributor {
+      background: rgba(78, 139, 191, 0.12);
+      border-color: rgba(78, 139, 191, 0.32);
+    }
+
+    .bubble.executive {
+      background: #f8fafc;
+    }
+
+    .bubble.ai {
+      background: #ffffff;
+      border-color: rgba(38, 106, 166, 0.28);
+      box-shadow: 0 10px 24px rgba(38, 106, 166, 0.08);
+    }
+
+    .bubble .label {
+      display: block;
+      font-weight: 900;
+      color: var(--blue-2);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin-bottom: 6px;
+    }
+
+    .ai-result {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .pill.green { color: #166534; background: #dcfce7; }
+    .pill.amber { color: #92400e; background: #fef3c7; }
+    .pill.blue { color: var(--blue-2); background: rgba(38, 106, 166, 0.10); }
+    .pill.red { color: #991b1b; background: #fee2e2; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 26px;
+      letter-spacing: -0.05em;
+      color: var(--text);
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+
+    .section-title {
+      margin: 20px 0 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+    }
+
+    .bar-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .bar-item {
+      display: grid;
+      gap: 6px;
+    }
+
+    .bar-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .bar-top span:last-child { color: var(--muted); font-weight: 800; }
+
+    .track {
+      height: 9px;
+      border-radius: 999px;
+      background: #edf2f7;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--sky), var(--cyan));
+      width: 50%;
+    }
+
+    .insights {
+      display: grid;
+      gap: 10px;
+    }
+
+    .insight {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      border-radius: 14px;
+      padding: 11px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .insight b { color: var(--text); }
+    .insight i {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(38, 106, 166, 0.10);
+      color: var(--blue);
+      font-style: normal;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    ul.clean {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 13px;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      padding: 8px 0 0;
+    }
+
+
+
+    .palette-strip {
+      display: grid;
+      grid-template-columns: 1.1fr 1.1fr 1.1fr 1fr;
+      height: 6px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 16px;
+      max-width: 520px;
+    }
+    .palette-strip span:nth-child(1) { background: #266AA6; }
+    .palette-strip span:nth-child(2) { background: #4E8BBF; }
+    .palette-strip span:nth-child(3) { background: #17BFA0; }
+    .palette-strip span:nth-child(4) { background: #F2F2F2; border-left: 1px solid var(--line); }
+
+    @media (max-width: 1160px) {
+      .workspace { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      .step:not(:last-child)::after { display: none; }
+      .scope-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      header { position: static; }
+      body { background: #fff; }
+      .panel, .notice, .step { box-shadow: none; }
+      button.case { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topline">
+      <div class="brand">
+        <div class="logo">CT</div>
+        <div>
+          <p class="eyebrow">Demo conceptual · Datos simulados</p>
+          <h1>Asistente IA Comercial para Ejecutivos CT</h1>
+        </div>
+      </div>
+      <span class="tag">Primer enfoque sujeto a validación técnica</span>
+    </div>
+    <p class="description">Vista demostrativa para visualizar cómo una capa interna de asistencia IA podría apoyar al ejecutivo comercial sin sustituir la relación actual con el distribuidor, y al mismo tiempo generar trazabilidad agregada para dirección.</p>
+    <div class="palette-strip" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  </header>
+
+  <main>
+    <section class="notice">
+      <div class="icon">ⓘ</div>
+      <div>
+        <strong>Lectura correcta de esta demo:</strong> no representa una implementación final ni una promesa de integración. Muestra un posible flujo de valor para revisar en sesión: el distribuidor sigue hablando con su ejecutivo; el ejecutivo consulta información autorizada; dirección obtiene visibilidad agregada sobre consultas y fricción operativa.
+      </div>
+    </section>
+
+    <section class="flow" aria-label="Flujo conceptual">
+      <div class="step"><small>1</small><h3>Distribuidor</h3><p>Contacta a su ejecutivo como hoy por el canal habitual.</p></div>
+      <div class="step"><small>2</small><h3>Ejecutivo CT</h3><p>Conserva la relación comercial y atiende la solicitud.</p></div>
+      <div class="step"><small>3</small><h3>Asistente IA</h3><p>Consulta fuentes internas autorizadas bajo reglas definidas.</p></div>
+      <div class="step"><small>4</small><h3>Respuesta</h3><p>Entrega información, opciones, alertas o pasos sugeridos.</p></div>
+      <div class="step"><small>5</small><h3>Dirección</h3><p>Visualiza métricas agregadas sobre consultas y procesos.</p></div>
+    </section>
+
+    <section class="workspace">
+      <aside class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Casos de uso iniciales</h2>
+            <p>Selecciona un caso para ver la simulación ejecutiva y su impacto en métricas.</p>
+          </div>
+          <span class="pill blue">Piloto</span>
+        </div>
+        <div class="panel-body">
+          <div class="case-tabs">
+            <button class="case active" data-case="inventario" onclick="setCase('inventario', this)">
+              <strong>Inventario y disponibilidad</strong>
+              <span>Consulta de stock, sucursal y alternativa de producto.</span>
+            </button>
+            <button class="case" data-case="pedido" onclick="setCase('pedido', this)">
+              <strong>Estatus de pedido</strong>
+              <span>Seguimiento operativo sin depender de búsqueda manual.</span>
+            </button>
+            <button class="case" data-case="registro" onclick="setCase('registro', this)">
+              <strong>Registro de solicitud</strong>
+              <span>Trazabilidad estructurada sin leer chats personales.</span>
+            </button>
+          </div>
+
+          <div class="section-title">Qué no demuestra esta vista</div>
+          <ul class="clean">
+            <li>No monitorea WhatsApps personales.</li>
+            <li>No reemplaza al ejecutivo comercial.</li>
+            <li>No aprueba precios especiales ni crédito.</li>
+            <li>No supone integración total desde el día uno.</li>
+          </ul>
+        </div>
+      </aside>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2 id="scenarioTitle">Inventario y disponibilidad por sucursal</h2>
+            <p id="scenarioSubtitle">Cómo el ejecutivo podría obtener una respuesta rápida sin cambiar la experiencia del distribuidor.</p>
+          </div>
+          <span id="casePill" class="pill green">Bajo riesgo</span>
+        </div>
+        <div class="panel-body">
+          <div class="conversation">
+            <div class="bubble distributor">
+              <span class="label">Distribuidor → Ejecutivo</span>
+              <div id="customerQuestion">¿Tienes disponibilidad de la laptop HP 240 G9? Idealmente para entrega desde Monterrey.</div>
+            </div>
+            <div class="bubble executive">
+              <span class="label">Ejecutivo → Asistente IA Comercial</span>
+              <div id="executiveQuery">Consulta disponibilidad de HP 240 G9 por sucursal y sugiere alternativa si no hay stock suficiente.</div>
+            </div>
+            <div class="bubble ai">
+              <span class="label">Asistente IA Comercial → Ejecutivo</span>
+              <div id="assistantAnswer">Disponible: Monterrey 12 unidades, Saltillo 4 unidades. Alternativa sugerida: Lenovo V15, 8 unidades en Monterrey. Validar precio final antes de cotizar.</div>
+              <div class="ai-result">
+                <div class="result-row"><span>Fuente consultada</span><strong id="sourceUsed">Inventario + catálogo</strong></div>
+                <div class="result-row"><span>Acción sugerida</span><strong id="suggestedAction">Responder disponibilidad y ofrecer alternativa</strong></div>
+                <div class="result-row"><span>Registro para dirección</span><strong id="directionRecord">Producto consultado · sucursal · alternativa</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Vista para dirección</h2>
+            <p>Indicadores simulados de un piloto controlado.</p>
+          </div>
+          <span class="pill blue">Agregado</span>
+        </div>
+        <div class="panel-body">
+          <div class="cards">
+            <div class="metric"><strong id="m1">428</strong><span>consultas asistidas</span></div>
+            <div class="metric"><strong id="m2">71%</strong><span>consultas resueltas</span></div>
+            <div class="metric"><strong id="m3">36 h</strong><span>tiempo estimado liberado</span></div>
+            <div class="metric"><strong id="m4">18</strong><span>alertas o fricciones</span></div>
+          </div>
+
+          <div class="section-title">Top motivos de consulta</div>
+          <div id="bars" class="bar-list"></div>
+
+          <div class="section-title">Lectura ejecutiva</div>
+          <div id="insights" class="insights"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="scope-grid">
+      <div class="panel">
+        <div class="panel-head"><div><h2>Alcance prudente de piloto</h2><p>Diseñado para validar valor antes de escalar.</p></div></div>
+        <div class="panel-body">
+          <ul class="clean">
+            <li>1 sucursal, célula comercial o grupo controlado.</li>
+            <li>3 a 5 ejecutivos comerciales.</li>
+            <li>1 o 2 fuentes de información autorizadas.</li>
+            <li>Casos iniciales: inventario/disponibilidad y estatus de pedido.</li>
+            <li>Métricas: uso, resolución, temas recurrentes, casos no resueltos y adopción.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h2>Validaciones antes de proponer alcance</h2><p>Evita sobreprometer integraciones o decisiones automáticas.</p></div></div>
+        <div class="panel-body">
+          <ul class="clean">
+            <li>Qué sistemas consultan hoy los ejecutivos.</li>
+            <li>Si inventario y pedidos tienen API, reporte o base consultable.</li>
+            <li>Qué datos están actualizados y quién los gobierna.</li>
+            <li>Qué permisos aplican por ejecutivo, sucursal o cartera.</li>
+            <li>Qué información queda fuera del piloto por sensibilidad.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">Demo conceptual para conversación ejecutiva. Todos los datos son simulados y deben validarse con fuentes, permisos e integraciones reales de CT.</p>
+  </main>
+
+  <script>
+    const cases = {
+      inventario: {
+        title: "Inventario y disponibilidad por sucursal",
+        subtitle: "Cómo el ejecutivo podría obtener una respuesta rápida sin cambiar la experiencia del distribuidor.",
+        pill: "Bajo riesgo",
+        pillClass: "green",
+        customer: "¿Tienes disponibilidad de la laptop HP 240 G9? Idealmente para entrega desde Monterrey.",
+        query: "Consulta disponibilidad de HP 240 G9 por sucursal y sugiere alternativa si no hay stock suficiente.",
+        answer: "Disponible: Monterrey 12 unidades, Saltillo 4 unidades. Alternativa sugerida: Lenovo V15, 8 unidades en Monterrey. Validar precio final antes de cotizar.",
+        source: "Inventario + catálogo",
+        action: "Responder disponibilidad y ofrecer alternativa",
+        record: "Producto consultado · sucursal · alternativa",
+        metrics: ["428", "71%", "36 h", "18"],
+        bars: [
+          ["Inventario / disponibilidad", 42],
+          ["Estatus de pedido", 26],
+          ["Garantías / seguimiento", 16],
+          ["Alternativas de producto", 10],
+          ["Otros", 6]
+        ],
+        insights: [
+          ["1", "Inventario y disponibilidad concentran 42% de las consultas simuladas del piloto."],
+          ["2", "18 consultas no tuvieron disponibilidad suficiente; esto puede revelar demanda no satisfecha."],
+          ["3", "Monterrey y Guadalajara aparecen como sucursales con mayor presión de consulta."],
+          ["4", "Las alternativas de producto pueden reducir pérdida de oportunidad cuando no hay stock inicial."]
+        ]
+      },
+      pedido: {
+        title: "Estatus de pedido",
+        subtitle: "Seguimiento rápido para disminuir búsquedas manuales y llamadas internas.",
+        pill: "Operativo",
+        pillClass: "amber",
+        customer: "¿Me ayudas a revisar en qué va el pedido 12345? El cliente me está pidiendo actualización.",
+        query: "Consulta estatus del pedido 12345 del distribuidor Grupo Delta y dime si requiere escalamiento.",
+        answer: "Pedido 12345: en preparación para envío. Última actualización: hoy 10:42. ETA estimada: mañana antes de las 14:00. No requiere escalamiento por ahora.",
+        source: "Pedidos + logística",
+        action: "Comunicar ETA y registrar seguimiento",
+        record: "Pedido · etapa · ETA · riesgo",
+        metrics: ["312", "76%", "28 h", "12"],
+        bars: [
+          ["Estatus de pedido", 39],
+          ["Inventario / disponibilidad", 27],
+          ["Entrega / logística", 18],
+          ["Registro de seguimiento", 11],
+          ["Otros", 5]
+        ],
+        insights: [
+          ["1", "Estatus de pedido representa 39% de la carga simulada; puede estar consumiendo tiempo comercial."],
+          ["2", "12 pedidos tuvieron más de 3 consultas de seguimiento, señal de posible fricción operativa."],
+          ["3", "La dirección podría identificar etapas donde se concentra mayor incertidumbre: preparación, envío o entrega."],
+          ["4", "El piloto permitiría distinguir consultas resueltas por información disponible vs. casos que requieren escalamiento."]
+        ]
+      },
+      registro: {
+        title: "Registro de solicitud o seguimiento",
+        subtitle: "Trazabilidad estructurada sin leer conversaciones personales de WhatsApp.",
+        pill: "Trazabilidad",
+        pillClass: "blue",
+        customer: "Te mandé los datos por WhatsApp. ¿Puedes darle seguimiento a mi garantía y avisarme el folio?",
+        query: "Registra solicitud de seguimiento de garantía para Distribuidora Alfa. Producto: impresora térmica. Motivo: falla de impresión.",
+        answer: "Solicitud registrada: SG-2048. Tipo: garantía. Área sugerida: soporte / garantías. Siguiente paso: solicitar comprobante y número de serie. Estatus: pendiente de documentación.",
+        source: "Registro interno / tickets",
+        action: "Generar folio y solicitar datos mínimos",
+        record: "Tipo de solicitud · cliente · área · estatus",
+        metrics: ["186", "64%", "19 h", "34"],
+        bars: [
+          ["Garantías / soporte", 31],
+          ["Estatus de pedido", 24],
+          ["Facturación / comprobante", 18],
+          ["Inventario", 16],
+          ["Otros", 11]
+        ],
+        insights: [
+          ["1", "El registro estructurado permite ver qué temas quedan abiertos, en proceso o vencidos."],
+          ["2", "34 solicitudes abiertas o con datos incompletos muestran dónde se puede mejorar continuidad."],
+          ["3", "Dirección podría ver qué áreas reciben más escalamiento sin leer chats personales."],
+          ["4", "El valor no es vigilancia; es trazabilidad de procesos repetitivos que antes quedaban dispersos."]
+        ]
+      }
+    };
+
+    function setCase(caseId, btn) {
+      const data = cases[caseId];
+      document.querySelectorAll('button.case').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      document.getElementById('scenarioTitle').textContent = data.title;
+      document.getElementById('scenarioSubtitle').textContent = data.subtitle;
+      const pill = document.getElementById('casePill');
+      pill.textContent = data.pill;
+      pill.className = 'pill ' + data.pillClass;
+
+      document.getElementById('customerQuestion').textContent = data.customer;
+      document.getElementById('executiveQuery').textContent = data.query;
+      document.getElementById('assistantAnswer').textContent = data.answer;
+      document.getElementById('sourceUsed').textContent = data.source;
+      document.getElementById('suggestedAction').textContent = data.action;
+      document.getElementById('directionRecord').textContent = data.record;
+
+      document.getElementById('m1').textContent = data.metrics[0];
+      document.getElementById('m2').textContent = data.metrics[1];
+      document.getElementById('m3').textContent = data.metrics[2];
+      document.getElementById('m4').textContent = data.metrics[3];
+
+      const bars = document.getElementById('bars');
+      bars.innerHTML = '';
+      data.bars.forEach(([label, value]) => {
+        const el = document.createElement('div');
+        el.className = 'bar-item';
+        el.innerHTML = `
+          <div class="bar-top"><span>${label}</span><span>${value}%</span></div>
+          <div class="track"><div class="fill" style="width: ${value}%"></div></div>
+        `;
+        bars.appendChild(el);
+      });
+
+      const insights = document.getElementById('insights');
+      insights.innerHTML = '';
+      data.insights.forEach(([num, text]) => {
+        const el = document.createElement('div');
+        el.className = 'insight';
+        el.innerHTML = `<i>${num}</i><span>${text}</span>`;
+        insights.appendChild(el);
+      });
+    }
+
+    setCase('inventario');
+  </script>
+</body>
+</html>
