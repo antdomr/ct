@@ -1,790 +1,779 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Demo Conceptual — Asistente IA Comercial CT</title>
-  <style>
-    :root {
-      --bg: #F2F2F2;
-      --panel: #ffffff;
-      --panel-soft: #f7fbfd;
-      --text: #17324a;
-      --muted: #64748b;
-      --line: #d8e4ee;
-      --blue: #266AA6;
-      --blue-2: #1d5485;
-      --sky: #4E8BBF;
-      --cyan: #17BFA0;
-      --green: #17BFA0;
-      --amber: #d97706;
-      --red: #dc2626;
-      --shadow: 0 16px 40px rgba(38, 106, 166, 0.10);
-      --radius: 18px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(38, 106, 166, 0.10), transparent 32%),
-        linear-gradient(180deg, #fbfdff 0%, var(--bg) 100%);
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    header {
-      padding: 26px clamp(18px, 4vw, 42px) 18px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.84);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
-
-    .topline {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--blue), var(--sky) 58%, var(--cyan));
-      color: white;
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      letter-spacing: -0.07em;
-      box-shadow: 0 12px 26px rgba(38, 106, 166, 0.22);
-    }
-
-    .eyebrow {
-      margin: 0;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--blue);
-      font-weight: 800;
-    }
-
-    h1 {
-      margin: 4px 0 0;
-      font-size: clamp(24px, 4vw, 42px);
-      line-height: 1.03;
-      letter-spacing: -0.045em;
-    }
-
-    header p.description {
-      margin: 14px 0 0;
-      max-width: 1080px;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 15px;
-    }
-
-    .tag {
-      border: 1px solid rgba(38, 106, 166, 0.24);
-      background: rgba(38, 106, 166, 0.08);
-      color: var(--blue-2);
-      border-radius: 999px;
-      padding: 9px 13px;
-      font-weight: 800;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    main {
-      padding: 24px clamp(18px, 4vw, 42px) 42px;
-      display: grid;
-      gap: 20px;
-    }
-
-    .notice {
-      background: #fff;
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      padding: 16px 18px;
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .notice strong { color: var(--text); }
-    .notice .icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
-      background: rgba(38, 106, 166, 0.10);
-      display: grid;
-      place-items: center;
-      color: var(--blue);
-      flex: 0 0 auto;
-    }
-
-    .flow {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 12px;
-    }
-
-    .step {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 15px;
-      min-height: 108px;
-      box-shadow: var(--shadow);
-      position: relative;
-    }
-
-    .step:not(:last-child)::after {
-      content: "→";
-      position: absolute;
-      right: -14px;
-      top: 43%;
-      color: var(--blue);
-      font-weight: 900;
-      font-size: 20px;
-      z-index: 2;
-    }
-
-    .step small {
-      display: inline-flex;
-      width: 28px;
-      height: 28px;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      background: rgba(38, 106, 166, 0.10);
-      color: var(--blue);
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    .step h3 {
-      margin: 0 0 6px;
-      font-size: 14px;
-    }
-
-    .step p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.35;
-    }
-
-    .workspace {
-      display: grid;
-      grid-template-columns: minmax(330px, 0.95fr) minmax(420px, 1.25fr) minmax(330px, 1fr);
-      gap: 18px;
-      align-items: start;
-    }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .panel-head {
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, #fff, #f9fbff);
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .panel-head h2 {
-      margin: 0;
-      font-size: 17px;
-      letter-spacing: -0.02em;
-    }
-
-    .panel-head p {
-      margin: 5px 0 0;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.35;
-    }
-
-    .panel-body { padding: 18px; }
-
-    .case-tabs {
-      display: grid;
-      gap: 10px;
-    }
-
-    button.case {
-      text-align: left;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--text);
-      border-radius: 16px;
-      padding: 14px;
-      cursor: pointer;
-      transition: 0.16s ease;
-      width: 100%;
-    }
-
-    button.case:hover {
-      border-color: rgba(38, 106, 166, 0.45);
-      transform: translateY(-1px);
-    }
-
-    button.case.active {
-      border-color: rgba(38, 106, 166, 0.75);
-      background: rgba(38, 106, 166, 0.06);
-      box-shadow: 0 10px 24px rgba(38, 106, 166, 0.10);
-    }
-
-    .case strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 14px;
-    }
-
-    .case span {
-      display: block;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.34;
-    }
-
-    .conversation {
-      display: grid;
-      gap: 13px;
-    }
-
-    .bubble {
-      border-radius: 18px;
-      padding: 14px 15px;
-      line-height: 1.42;
-      font-size: 14px;
-      border: 1px solid var(--line);
-    }
-
-    .bubble.distributor {
-      background: rgba(78, 139, 191, 0.12);
-      border-color: rgba(78, 139, 191, 0.32);
-    }
-
-    .bubble.executive {
-      background: #f8fafc;
-    }
-
-    .bubble.ai {
-      background: #ffffff;
-      border-color: rgba(38, 106, 166, 0.28);
-      box-shadow: 0 10px 24px rgba(38, 106, 166, 0.08);
-    }
-
-    .bubble .label {
-      display: block;
-      font-weight: 900;
-      color: var(--blue-2);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      margin-bottom: 6px;
-    }
-
-    .ai-result {
-      display: grid;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .result-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      border-top: 1px solid var(--line);
-      padding-top: 10px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 11px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      white-space: nowrap;
-    }
-
-    .pill.green { color: #166534; background: #dcfce7; }
-    .pill.amber { color: #92400e; background: #fef3c7; }
-    .pill.blue { color: var(--blue-2); background: rgba(38, 106, 166, 0.10); }
-    .pill.red { color: #991b1b; background: #fee2e2; }
-
-
-    .simulated-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-      border: 1px solid rgba(23, 191, 160, 0.30);
-      background: rgba(23, 191, 160, 0.10);
-      color: #0f766e;
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-size: 12px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 12px;
-    }
-
-    .simulated-label::before {
-      content: "ⓘ";
-      font-size: 14px;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .metric {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px;
-      background: #fff;
-    }
-
-    .metric strong {
-      display: block;
-      font-size: 26px;
-      letter-spacing: -0.05em;
-      color: var(--text);
-    }
-
-    .metric span {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 800;
-    }
-
-    .section-title {
-      margin: 20px 0 10px;
-      font-size: 12px;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 900;
-      letter-spacing: 0.12em;
-    }
-
-    .bar-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .bar-item {
-      display: grid;
-      gap: 6px;
-    }
-
-    .bar-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--text);
-    }
-
-    .bar-top span:last-child { color: var(--muted); font-weight: 800; }
-
-    .track {
-      height: 9px;
-      border-radius: 999px;
-      background: #edf2f7;
-      overflow: hidden;
-    }
-
-    .fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--blue), var(--sky), var(--cyan));
-      width: 50%;
-    }
-
-    .insights {
-      display: grid;
-      gap: 10px;
-    }
-
-    .insight {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      border: 1px solid var(--line);
-      background: var(--panel-soft);
-      border-radius: 14px;
-      padding: 11px 12px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    .insight b { color: var(--text); }
-    .insight i {
-      width: 22px;
-      height: 22px;
-      flex: 0 0 auto;
-      display: grid;
-      place-items: center;
-      border-radius: 999px;
-      background: rgba(38, 106, 166, 0.10);
-      color: var(--blue);
-      font-style: normal;
-      font-weight: 900;
-      font-size: 12px;
-    }
-
-    .scope-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-
-    ul.clean {
-      margin: 0;
-      padding-left: 18px;
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: 13px;
-    }
-
-    .footer-note {
-      color: var(--muted);
-      text-align: center;
-      font-size: 12px;
-      padding: 8px 0 0;
-    }
-
-
-
-    .palette-strip {
-      display: grid;
-      grid-template-columns: 1.1fr 1.1fr 1.1fr 1fr;
-      height: 6px;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 16px;
-      max-width: 520px;
-    }
-    .palette-strip span:nth-child(1) { background: #266AA6; }
-    .palette-strip span:nth-child(2) { background: #4E8BBF; }
-    .palette-strip span:nth-child(3) { background: #17BFA0; }
-    .palette-strip span:nth-child(4) { background: #F2F2F2; border-left: 1px solid var(--line); }
-
-    @media (max-width: 1160px) {
-      .workspace { grid-template-columns: 1fr; }
-      .flow { grid-template-columns: 1fr; }
-      .step:not(:last-child)::after { display: none; }
-      .scope-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 720px) {
-      .cards { grid-template-columns: 1fr; }
-    }
-
-    @media print {
-      header { position: static; }
-      body { background: #fff; }
-      .panel, .notice, .step { box-shadow: none; }
-      button.case { break-inside: avoid; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Demo Conceptual — Asistente IA Comercial CT</title>
+<style>
+:root {
+--bg: #F2F2F2;
+--panel: #ffffff;
+--panel-soft: #f7fbfd;
+--text: #17324a;
+--muted: #64748b;
+--line: #d8e4ee;
+--blue: #266AA6;
+--blue-2: #1d5485;
+--sky: #4E8BBF;
+--cyan: #17BFA0;
+--green: #17BFA0;
+--amber: #d97706;
+--red: #dc2626;
+--shadow: 0 16px 40px rgba(38, 106, 166, 0.10);
+--radius: 18px;
+}
+* { box-sizing: border-box; }
+body {
+margin: 0;
+background:
+radial-gradient(circle at top left, rgba(38, 106, 166, 0.10), transparent 32%),
+linear-gradient(180deg, #fbfdff 0%, var(--bg) 100%);
+color: var(--text);
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+header {
+padding: 26px clamp(18px, 4vw, 42px) 18px;
+border-bottom: 1px solid var(--line);
+background: rgba(255, 255, 255, 0.84);
+backdrop-filter: blur(12px);
+position: sticky;
+top: 0;
+z-index: 20;
+}
+.topline {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 18px;
+flex-wrap: wrap;
+}
+.brand {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+.logo {
+width: 46px;
+height: 46px;
+border-radius: 14px;
+background: linear-gradient(135deg, var(--blue), var(--sky) 58%, var(--cyan));
+color: white;
+display: grid;
+place-items: center;
+font-weight: 900;
+letter-spacing: -0.07em;
+box-shadow: 0 12px 26px rgba(38, 106, 166, 0.22);
+}
+.eyebrow {
+margin: 0;
+font-size: 12px;
+text-transform: uppercase;
+letter-spacing: 0.12em;
+color: var(--blue);
+font-weight: 800;
+}
+h1 {
+margin: 4px 0 0;
+font-size: clamp(24px, 4vw, 42px);
+line-height: 1.03;
+letter-spacing: -0.045em;
+}
+header p.description {
+margin: 14px 0 0;
+max-width: 1080px;
+color: var(--muted);
+line-height: 1.5;
+font-size: 15px;
+}
+.tag {
+border: 1px solid rgba(38, 106, 166, 0.24);
+background: rgba(38, 106, 166, 0.08);
+color: var(--blue-2);
+border-radius: 999px;
+padding: 9px 13px;
+font-weight: 800;
+font-size: 13px;
+white-space: nowrap;
+}
+main {
+padding: 24px clamp(18px, 4vw, 42px) 42px;
+display: grid;
+gap: 20px;
+}
+.notice {
+background: #fff;
+border: 1px solid var(--line);
+box-shadow: var(--shadow);
+border-radius: var(--radius);
+padding: 16px 18px;
+display: flex;
+gap: 14px;
+align-items: flex-start;
+color: var(--muted);
+line-height: 1.45;
+}
+.notice strong { color: var(--text); }
+.notice .icon {
+width: 32px;
+height: 32px;
+border-radius: 10px;
+background: rgba(38, 106, 166, 0.10);
+display: grid;
+place-items: center;
+color: var(--blue);
+flex: 0 0 auto;
+}
+.flow {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 12px;
+}
+.step {
+background: var(--panel);
+border: 1px solid var(--line);
+border-radius: var(--radius);
+padding: 15px;
+min-height: 108px;
+box-shadow: var(--shadow);
+position: relative;
+}
+.step:not(:last-child)::after {
+content: "→";
+position: absolute;
+right: -14px;
+top: 43%;
+color: var(--blue);
+font-weight: 900;
+font-size: 20px;
+z-index: 2;
+}
+.step small {
+display: inline-flex;
+width: 28px;
+height: 28px;
+align-items: center;
+justify-content: center;
+border-radius: 999px;
+background: rgba(38, 106, 166, 0.10);
+color: var(--blue);
+font-weight: 900;
+margin-bottom: 8px;
+}
+.step h3 {
+margin: 0 0 6px;
+font-size: 14px;
+}
+.step p {
+margin: 0;
+color: var(--muted);
+font-size: 12.5px;
+line-height: 1.35;
+}
+.workspace {
+display: grid;
+grid-template-columns: minmax(330px, 0.95fr) minmax(420px, 1.25fr) minmax(330px, 1fr);
+gap: 18px;
+align-items: start;
+}
+.panel {
+background: var(--panel);
+border: 1px solid var(--line);
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+overflow: hidden;
+}
+.panel-head {
+padding: 16px 18px;
+border-bottom: 1px solid var(--line);
+background: linear-gradient(180deg, #fff, #f9fbff);
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 12px;
+}
+.panel-head h2 {
+margin: 0;
+font-size: 17px;
+letter-spacing: -0.02em;
+}
+.panel-head p {
+margin: 5px 0 0;
+color: var(--muted);
+font-size: 12.5px;
+line-height: 1.35;
+}
+.panel-body { padding: 18px; }
+.case-tabs {
+display: grid;
+gap: 10px;
+}
+button.case {
+text-align: left;
+border: 1px solid var(--line);
+background: #fff;
+color: var(--text);
+border-radius: 16px;
+padding: 14px;
+cursor: pointer;
+transition: 0.16s ease;
+width: 100%;
+}
+button.case:hover {
+border-color: rgba(38, 106, 166, 0.45);
+transform: translateY(-1px);
+}
+button.case.active {
+border-color: rgba(38, 106, 166, 0.75);
+background: rgba(38, 106, 166, 0.06);
+box-shadow: 0 10px 24px rgba(38, 106, 166, 0.10);
+}
+.case strong {
+display: block;
+margin-bottom: 4px;
+font-size: 14px;
+}
+.case span {
+display: block;
+color: var(--muted);
+font-size: 12.5px;
+line-height: 1.34;
+}
+.conversation {
+display: grid;
+gap: 13px;
+}
+.bubble {
+border-radius: 18px;
+padding: 14px 15px;
+line-height: 1.42;
+font-size: 14px;
+border: 1px solid var(--line);
+}
+.bubble.distributor {
+background: rgba(78, 139, 191, 0.12);
+border-color: rgba(78, 139, 191, 0.32);
+}
+.bubble.executive {
+background: #f8fafc;
+}
+.bubble.ai {
+background: #ffffff;
+border-color: rgba(38, 106, 166, 0.28);
+box-shadow: 0 10px 24px rgba(38, 106, 166, 0.08);
+}
+.bubble .label {
+display: block;
+font-weight: 900;
+color: var(--blue-2);
+font-size: 11px;
+text-transform: uppercase;
+letter-spacing: 0.09em;
+margin-bottom: 6px;
+}
+.ai-result {
+display: grid;
+gap: 10px;
+margin-top: 10px;
+}
+.result-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+border-top: 1px solid var(--line);
+padding-top: 10px;
+color: var(--muted);
+font-size: 13px;
+}
+.pill {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+border-radius: 999px;
+padding: 5px 9px;
+font-size: 11px;
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.06em;
+white-space: nowrap;
+}
+.pill.green { color: #166534; background: #dcfce7; }
+.pill.amber { color: #92400e; background: #fef3c7; }
+.pill.blue { color: var(--blue-2); background: rgba(38, 106, 166, 0.10); }
+.pill.red { color: #991b1b; background: #fee2e2; }
+.simulated-label {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+width: 100%;
+border: 1px solid rgba(23, 191, 160, 0.30);
+background: rgba(23, 191, 160, 0.10);
+color: #0f766e;
+border-radius: 14px;
+padding: 10px 12px;
+font-size: 12px;
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.06em;
+margin-bottom: 12px;
+}
+.simulated-label::before {
+content: "ⓘ";
+font-size: 14px;
+}
+.cards {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+}
+.metric {
+border: 1px solid var(--line);
+border-radius: 16px;
+padding: 14px;
+background: #fff;
+}
+.metric strong {
+display: block;
+font-size: 26px;
+letter-spacing: -0.05em;
+color: var(--text);
+}
+.metric span {
+display: block;
+margin-top: 4px;
+color: var(--muted);
+font-size: 11px;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+font-weight: 800;
+}
+.section-title {
+margin: 20px 0 10px;
+font-size: 12px;
+text-transform: uppercase;
+color: var(--muted);
+font-weight: 900;
+letter-spacing: 0.12em;
+}
+.bar-list {
+display: grid;
+gap: 10px;
+}
+.bar-item {
+display: grid;
+gap: 6px;
+}
+.bar-top {
+display: flex;
+justify-content: space-between;
+gap: 10px;
+font-size: 13px;
+color: var(--text);
+}
+.bar-top span:last-child { color: var(--muted); font-weight: 800; }
+.track {
+height: 9px;
+border-radius: 999px;
+background: #edf2f7;
+overflow: hidden;
+}
+.fill {
+height: 100%;
+border-radius: 999px;
+background: linear-gradient(90deg, var(--blue), var(--sky), var(--cyan));
+width: 50%;
+}
+.insights {
+display: grid;
+gap: 10px;
+}
+.insight {
+display: flex;
+gap: 10px;
+align-items: flex-start;
+border: 1px solid var(--line);
+background: var(--panel-soft);
+border-radius: 14px;
+padding: 11px 12px;
+color: var(--muted);
+font-size: 13px;
+line-height: 1.35;
+}
+.insight b { color: var(--text); }
+.insight i {
+width: 22px;
+height: 22px;
+flex: 0 0 auto;
+display: grid;
+place-items: center;
+border-radius: 999px;
+background: rgba(38, 106, 166, 0.10);
+color: var(--blue);
+font-style: normal;
+font-weight: 900;
+font-size: 12px;
+}
+.scope-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 18px;
+}
+ul.clean {
+margin: 0;
+padding-left: 18px;
+color: var(--muted);
+line-height: 1.55;
+font-size: 13px;
+}
+.footer-note {
+color: var(--muted);
+text-align: center;
+font-size: 12px;
+padding: 8px 0 0;
+}
+.palette-strip {
+display: grid;
+grid-template-columns: 1.1fr 1.1fr 1.1fr 1fr;
+height: 6px;
+border-radius: 999px;
+overflow: hidden;
+margin-top: 16px;
+max-width: 520px;
+}
+.palette-strip span:nth-child(1) { background: #266AA6; }
+.palette-strip span:nth-child(2) { background: #4E8BBF; }
+.palette-strip span:nth-child(3) { background: #17BFA0; }
+.palette-strip span:nth-child(4) { background: #F2F2F2; border-left: 1px solid var(--line); }
+@media (max-width: 1160px) {
+.workspace { grid-template-columns: 1fr; }
+.flow { grid-template-columns: 1fr; }
+.step:not(:last-child)::after { display: none; }
+.scope-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+.cards { grid-template-columns: 1fr; }
+}
+@media print {
+header { position: static; }
+body { background: #fff; }
+.panel, .notice, .step { box-shadow: none; }
+button.case { break-inside: avoid; }
+}
+</style>
 </head>
 <body>
-  <header>
-    <div class="topline">
-      <div class="brand">
-        <div class="logo">CT</div>
-        <div>
-          <p class="eyebrow">Demo conceptual · Datos simulados</p>
-          <h1>Asistente IA Comercial para Ejecutivos CT</h1>
-        </div>
-      </div>
-     
-    </div>
-    <p class="description">Vista demostrativa para visualizar cómo una capa interna de asistencia IA podría apoyar al ejecutivo comercial sin sustituir la relación actual con el distribuidor, y al mismo tiempo generar trazabilidad agregada para dirección.</p>
-    <div class="palette-strip" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-  </header>
+<header>
+<div class="topline">
+<div class="brand">
+<div class="logo">CT</div>
+<div>
+<p class="eyebrow">Demo conceptual · Alcance funcional preliminar</p>
+<h1>Asistente IA Comercial por WhatsApp para Ejecutivos CT</h1>
+</div>
+</div>
 
-  <main>
-   
+</div>
+<p class="description">La propuesta mantiene al ejecutivo como punto de contacto con el distribuidor y organiza las consultas en 7 casos de uso, atendidos mediante conocimiento validado, consulta a sistemas internos autorizados o reglas y escalamiento.</p>
+<div class="palette-strip" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+</header>
+<main>
 
-    <section class="flow" aria-label="Flujo conceptual">
-      <div class="step"><small>1</small><h3>Distribuidor</h3><p>Contacta a su ejecutivo como hoy por el canal habitual.</p></div>
-      <div class="step"><small>2</small><h3>Ejecutivo CT</h3><p>Conserva la relación comercial y atiende la solicitud.</p></div>
-      <div class="step"><small>3</small><h3>Asistente IA</h3><p>Consulta fuentes internas autorizadas bajo reglas definidas.</p></div>
-      <div class="step"><small>4</small><h3>Respuesta</h3><p>Entrega información, opciones, alertas o pasos sugeridos.</p></div>
-      <div class="step"><small>5</small><h3>Dirección</h3><p>Visualiza métricas agregadas sobre consultas y procesos.</p></div>
-    </section>
+<section class="flow" aria-label="Flujo conceptual">
+<div class="step"><small>1</small><h3>Distribuidor</h3><p>Contacta a su ejecutivo como hoy por el canal habitual.</p></div>
+<div class="step"><small>2</small><h3>Ejecutivo CT</h3><p>Conserva la relación comercial y realiza la consulta al Asistente.</p></div>
+<div class="step"><small>3</small><h3>Asistente IA</h3><p>Identifica el caso de uso, la intención y el mecanismo necesario para resolver.</p></div>
+<div class="step"><small>4</small><h3>Fuentes y reglas</h3><p>Usa conocimiento validado, sistemas autorizados o reglas de escalamiento.</p></div>
+<div class="step"><small>5</small><h3>Respuesta + trazabilidad</h3><p>Entrega información al ejecutivo y registra la consulta para análisis agregado.</p></div>
+</section>
+<section class="workspace">
+<aside class="panel">
+<div class="panel-head">
+<div>
+<h2>Casos de Uso</h2>
+<p>Selecciona un caso de uso para visualizar cómo el Asistente apoyaría al ejecutivo. Los números corresponden al levantamiento original de CT.</p>
+</div>
+<span class="pill blue">7 Casos de Uso</span>
+</div>
+<div class="panel-body">
+<div class="case-tabs">
+<button class="case active" data-case="inventario" onclick="setCase('inventario', this)">
+<strong>1. Inventario, disponibilidad y abastecimiento</strong>
+<span>Preguntas 2, 3, 4, 8, 11 y 12.</span>
+</button>
+<button class="case" data-case="logistica" onclick="setCase('logistica', this)">
+<strong>2. Pedidos, logística, entregas y fletes</strong>
+<span>Preguntas 1, 6, 7, 13, 17, 21, 34, 35 y 37.</span>
+</button>
+<button class="case" data-case="precios" onclick="setCase('precios', this)">
+<strong>3. Precios, cotización y condiciones comerciales</strong>
+<span>Preguntas 5, 16 y 29.</span>
+</button>
+<button class="case" data-case="producto" onclick="setCase('producto', this)">
+<strong>4. Producto, compatibilidad y comparativas</strong>
+<span>Preguntas 18, 19, 30, 36 y 38.</span>
+</button>
+<button class="case" data-case="garantias" onclick="setCase('garantias', this)">
+<strong>5. Garantías y postventa</strong>
+<span>Preguntas 14, 15, 26, 27 y 28.</span>
+</button>
+<button class="case" data-case="digital" onclick="setCase('digital', this)">
+<strong>6. Compra en línea, licenciamiento y procesos digitales</strong>
+<span>Preguntas 20, 31, 32 y 33.</span>
+</button>
+<button class="case" data-case="administrativo" onclick="setCase('administrativo', this)">
+<strong>7. Ejecutivo, contacto, pagos y datos administrativos</strong>
+<span>Preguntas 22, 23, 24 y 25.</span>
+</button>
+</div>
+<div class="section-title">Límites del planteamiento</div>
+<ul class="clean">
+<li>Las 38 preguntas no se consideran 38 desarrollos independientes.</li>
+<li>Las preguntas 9 y 10 requieren contexto adicional antes de asignarlas a un Caso de Uso.</li>
+<li>No reemplaza al ejecutivo ni aprueba automáticamente precios, crédito o excepciones.</li>
+<li>No supone integraciones con sistemas de CT sin validación técnica previa.</li>
+</ul>
+</div>
+</aside>
+<section class="panel">
+<div class="panel-head">
+<div>
+<h2 id="scenarioTitle">Inventario, disponibilidad y abastecimiento</h2>
+<p id="scenarioSubtitle">Ejemplo de cómo una consulta frecuente se resolvería sin cambiar la relación entre distribuidor y ejecutivo.</p>
+</div>
+<span id="casePill" class="pill green">Sistema interno</span>
+</div>
+<div class="panel-body">
+<div class="conversation">
+<div class="bubble distributor">
+<span class="label">Distribuidor → Ejecutivo</span>
+<div id="customerQuestion">¿Me podrás checar en qué sucursal hay mercancía?</div>
+</div>
+<div class="bubble executive">
+<span class="label">Ejecutivo → Asistente IA Comercial</span>
+<div id="executiveQuery">Consulta la disponibilidad del producto solicitado por sucursal y muéstrame la información disponible para responder al distribuidor.</div>
+</div>
+<div class="bubble ai">
+<span class="label">Asistente IA Comercial → Ejecutivo</span>
+<div id="assistantAnswer">El Asistente consultaría la fuente de inventario autorizada por CT y presentaría al ejecutivo la disponibilidad por sucursal. Si la fuente lo permite, también podría mostrar fecha estimada de abastecimiento u opciones relacionadas. No se muestran existencias reales en esta demo.</div>
+<div class="ai-result">
+<div class="result-row"><span>Fuente consultada</span><strong id="sourceUsed">Fuente de inventario autorizada</strong></div>
+<div class="result-row"><span>Acción sugerida</span><strong id="suggestedAction">Presentar disponibilidad y datos útiles para responder</strong></div>
+<div class="result-row"><span>Registro para dirección</span><strong id="directionRecord">Caso de Uso · producto consultado · sucursal · resultado</strong></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<aside class="panel">
+<div class="panel-head">
+<div>
+<h2>Vista ejecutiva del alcance</h2>
+<p>Resumen derivado del levantamiento proporcionado por CT.</p>
+</div>
+<span class="pill blue">Trazabilidad</span>
+</div>
+<div class="panel-body">
+<div class="simulated-label">Cobertura del levantamiento · no representa volúmenes reales de operación</div>
+<div class="cards">
+<div class="metric"><strong id="m1">38</strong><span>preguntas proporcionadas</span></div>
+<div class="metric"><strong id="m2">7</strong><span>Casos de Uso</span></div>
+<div class="metric"><strong id="m3">3</strong><span>mecanismos de resolución</span></div>
+<div class="metric"><strong id="m4">2</strong><span>preguntas por contextualizar</span></div>
+</div>
+<div class="section-title">Distribución del levantamiento</div>
+<div id="bars" class="bar-list"></div>
+<div class="section-title">Lectura para estimación</div>
+<div id="insights" class="insights"></div>
+</div>
+</aside>
+</main>
+<script>
+const cases = {
+inventario: {
+title: "Inventario, disponibilidad y abastecimiento",
+subtitle: "Preguntas 2, 3, 4, 8, 11 y 12 · Principalmente consulta de información dinámica y reglas de explicación.",
+pill: "Sistema interno",
+pillClass: "blue",
+customer: "¿Me podrás checar en qué sucursal hay mercancía?",
+query: "Consulta la disponibilidad del producto solicitado por sucursal y muéstrame la información disponible para responder al distribuidor.",
+answer: "El Asistente consultaría la fuente de inventario autorizada por CT y presentaría al ejecutivo la disponibilidad por sucursal. Si la fuente lo permite, también podría mostrar fecha estimada de abastecimiento. Las explicaciones sobre niveles de stock quedarían sujetas a información y reglas definidas por CT.",
+source: "Inventario / abastecimiento · por validar",
+action: "Presentar disponibilidad, ubicación o fecha disponible",
+record: "Caso de Uso · producto · sucursal · tipo de consulta · resultado",
+metrics: ["38", "7", "3", "2"],
+insights: [
+["1", "Este Caso de Uso agrupa 6 de las 38 preguntas proporcionadas por CT."],
+["2", "La complejidad depende de identificar la fuente que contiene inventario, disponibilidad y fechas de abastecimiento."],
+["3", "Una misma integración podría atender varias preguntas del Caso de Uso; no se recomienda cotizarlas por separado."],
+["4", "Las explicaciones sobre por qué existe o no stock requieren información o reglas autorizadas por CT."]
+]
+},
+logistica: {
+title: "Pedidos, logística, entregas y fletes",
+subtitle: "Preguntas 1, 6, 7, 13, 17, 21, 34, 35 y 37 · Seguimiento operativo, políticas y excepciones.",
+pill: "Sistema + reglas",
+pillClass: "amber",
+customer: "Hice un pedido en línea pero no sé dónde viene.",
+query: "Consulta el estatus del pedido y, si la información está disponible, muestra guía, etapa, fecha estimada y cualquier alerta relevante.",
+answer: "El Asistente consultaría las fuentes autorizadas de pedidos y logística. Podría presentar al ejecutivo el estatus, guía o fecha estimada cuando esos datos estén disponibles. Las preguntas sobre apoyos de flete o excepciones quedarían sujetas a reglas y autorización.",
+source: "Pedidos / logística / políticas · por validar",
+action: "Presentar seguimiento o indicar si requiere escalamiento",
+record: "Caso de Uso · pedido · etapa · guía/ETA · escalamiento",
+metrics: ["38", "7", "3", "2"],
+insights: [
+["1", "Es el Caso de Uso con mayor número de preguntas del levantamiento: 9 de 38."],
+["2", "Combina consultas transaccionales con preguntas de política y excepciones comerciales u operativas."],
+["3", "Debe validarse si pedido, guía, CEDIS, entrega y flete residen en una misma fuente o en sistemas distintos."],
+["4", "El número de integraciones necesarias puede modificar de forma importante la configuración inicial."]
+]
+},
+precios: {
+title: "Precios, cotización y condiciones comerciales",
+subtitle: "Preguntas 5, 16 y 29 · Consulta de información comercial con reglas y niveles de autorización.",
+pill: "Reglas + sistema",
+pillClass: "amber",
+customer: "Si necesito 10 piezas de este modelo, ¿qué precio me das?",
+query: "Consulta la información de precio autorizada para 10 piezas y dime qué parte puedo comunicar y qué parte requiere autorización.",
+answer: "El Asistente podría consultar la fuente de precios autorizada y presentar información al ejecutivo. Descuentos, igualación o mejora de precio no se aprobarían automáticamente salvo que CT defina reglas explícitas y niveles de autorización.",
+source: "Precios / condiciones comerciales · por validar",
+action: "Presentar información y marcar decisiones sujetas a autorización",
+record: "Caso de Uso · producto · volumen · tipo de solicitud · autorización",
+metrics: ["38", "7", "3", "2"],
+insights: [
+["1", "Este Caso de Uso agrupa 3 de las 38 preguntas proporcionadas."],
+["2", "Aunque tiene menos preguntas, puede requerir mayor control por tratarse de condiciones comerciales."],
+["3", "Debe definirse qué precio puede consultar el Asistente y qué decisiones continúan bajo autorización humana."],
+["4", "La cotización debe separar consulta de datos de cualquier lógica especial de aprobación que se solicite."]
+]
+},
+producto: {
+title: "Producto, compatibilidad y comparativas",
+subtitle: "Preguntas 18, 19, 30, 36 y 38 · Principalmente conocimiento de producto y, según la fuente, catálogo estructurado.",
+pill: "Conocimiento",
+pillClass: "green",
+customer: "¿Qué memoria le queda a este modelo de máquina?",
+query: "Consulta la información técnica autorizada del modelo y muestra las memorias compatibles y las condiciones relevantes.",
+answer: "El Asistente utilizaría fichas técnicas, catálogos o una fuente de producto validada por CT para ayudar al ejecutivo con compatibilidades y comparativas. Las preguntas 36 y 38 requieren conocer el producto o contexto específico para definir su respuesta definitiva.",
+source: "Catálogo / fichas técnicas · por validar",
+action: "Presentar información técnica o comparativa sustentada",
+record: "Caso de Uso · producto · atributo consultado · fuente utilizada",
+metrics: ["38", "7", "3", "2"],
+insights: [
+["1", "Este Caso de Uso agrupa 5 de las 38 preguntas proporcionadas."],
+["2", "Puede resolverse principalmente con conocimiento estructurado si CT dispone de fichas y catálogos confiables."],
+["3", "Debe evitarse que el Asistente complete especificaciones no presentes en fuentes autorizadas."],
+["4", "Las preguntas 36 y 38 permanecen dependientes del contexto del producto al que se refieren."]
+]
+},
+garantias: {
+title: "Garantías y postventa",
+subtitle: "Preguntas 14, 15, 26, 27 y 28 · Combina conocimiento de proceso con consulta de estatus.",
+pill: "Conocimiento + sistema",
+pillClass: "blue",
+customer: "Tramité garantía de este producto, ¿me puedes decir qué estatus tiene?",
+query: "Consulta el estatus de la garantía y muéstrame la etapa actual, siguiente paso e información disponible para responder.",
+answer: "Para consultas de proceso, requisitos o tiempos, el Asistente podría utilizar conocimiento validado. Para el estatus particular de una garantía o nota de crédito sería necesario consultar la fuente interna correspondiente, si está disponible e integrada.",
+source: "Base de conocimiento + garantías · por validar",
+action: "Responder proceso o consultar estatus según la intención",
+record: "Caso de Uso · garantía · etapa · siguiente paso · resultado",
+metrics: ["38", "7", "3", "2"],
+insights: [
+["1", "Este Caso de Uso agrupa 5 de las 38 preguntas proporcionadas."],
+["2", "Permite distinguir claramente entre preguntas de conocimiento y consultas transaccionales de estatus."],
+["3", "La integración de garantía solo sería necesaria para información particular de cada trámite."],
+["4", "Requisitos y políticas deben provenir de documentación validada por CT."]
+]
+},
+digital: {
+title: "Compra en línea, licenciamiento y procesos digitales",
+subtitle: "Preguntas 20, 31, 32 y 33 · Principalmente orientación mediante procedimientos validados.",
+pill: "Conocimiento",
+pillClass: "green",
+customer: "¿Cómo descargar las licencias adquiridas en línea?",
+query: "Muéstrame el procedimiento validado por CT para descargar una licencia adquirida en línea.",
+answer: "El Asistente podría guiar al ejecutivo paso a paso utilizando procedimientos y documentación previamente proporcionados y validados por CT. Si algún paso depende de datos de cuenta o transacción, esa parte requeriría acceso autorizado a la fuente correspondiente.",
+source: "Procedimientos / base de conocimiento",
+action: "Entregar guía validada y señalar dependencias",
+record: "Caso de Uso · procedimiento consultado · resultado",
+metrics: ["38", "7", "3", "2"],
+insights: [
+["1", "Este Caso de Uso agrupa 4 de las 38 preguntas proporcionadas."],
+["2", "En principio es un buen candidato para resolución mediante base de conocimiento."],
+["3", "La calidad dependerá de contar con procedimientos vigentes y validados por CT."],
+["4", "Solo los pasos que requieran información particular del usuario necesitarían integración adicional."]
+]
+},
+administrativo: {
+title: "Ejecutivo, contacto, pagos y datos administrativos",
+subtitle: "Preguntas 22, 23, 24 y 25 · Datos de contacto y referencias administrativas con control de fuente.",
+pill: "Sistema / fuente oficial",
+pillClass: "blue",
+customer: "¿Quién es mi vendedor?",
+query: "Consulta el ejecutivo asignado al distribuidor y muéstrame los datos autorizados para compartir.",
+answer: "El Asistente requeriría consultar la fuente oficial donde CT mantiene la asignación distribuidor-ejecutivo. Para datos sensibles, como cuentas bancarias, únicamente debería utilizar fuentes oficiales controladas y no generar ni modificar esa información libremente.",
+source: "Maestro de clientes / fuente oficial · por validar",
+action: "Presentar dato autorizado desde una fuente controlada",
+record: "Caso de Uso · distribuidor · dato solicitado · fuente",
+metrics: ["38", "7", "3", "2"],
+insights: [
+["1", "Este Caso de Uso agrupa 4 de las 38 preguntas proporcionadas."],
+["2", "La asignación de vendedor depende de identificar la fuente donde CT mantiene la relación con cada distribuidor."],
+["3", "Los datos bancarios requieren controles de fuente y actualización especialmente estrictos."],
+["4", "No debe asumirse que todos los datos administrativos residen en el mismo sistema."]
+]
+}
+};
 
-    <section class="workspace">
-      <aside class="panel">
-        <div class="panel-head">
-          <div>
-            <h2>Casos de uso iniciales</h2>
-            <p>Selecciona un caso para ver la simulación ejecutiva y su impacto en métricas.</p>
-          </div>
-          <span class="pill blue">Piloto</span>
-        </div>
-        <div class="panel-body">
-          <div class="case-tabs">
-            <button class="case active" data-case="inventario" onclick="setCase('inventario', this)">
-              <strong>Inventario y disponibilidad</strong>
-              <span>Consulta de stock, sucursal y alternativa de producto.</span>
-            </button>
-            <button class="case" data-case="pedido" onclick="setCase('pedido', this)">
-              <strong>Estatus de pedido</strong>
-              <span>Seguimiento operativo sin depender de búsqueda manual.</span>
-            </button>
-            <button class="case" data-case="registro" onclick="setCase('registro', this)">
-              <strong>Registro de solicitud</strong>
-              <span>Trazabilidad estructurada sin leer chats personales.</span>
-            </button>
-          </div>
-
-          <div class="section-title">Qué no demuestra esta vista</div>
-          <ul class="clean">
-            <li>No monitorea WhatsApps personales.</li>
-            <li>No reemplaza al ejecutivo comercial.</li>
-            <li>No aprueba precios especiales ni crédito.</li>
-            <li>No supone integración total desde el día uno.</li>
-          </ul>
-        </div>
-      </aside>
-
-      <section class="panel">
-        <div class="panel-head">
-          <div>
-            <h2 id="scenarioTitle">Inventario y disponibilidad por sucursal</h2>
-            <p id="scenarioSubtitle">Cómo el ejecutivo podría obtener una respuesta rápida sin cambiar la experiencia del distribuidor.</p>
-          </div>
-          <span id="casePill" class="pill green">Bajo riesgo</span>
-        </div>
-        <div class="panel-body">
-          <div class="conversation">
-            <div class="bubble distributor">
-              <span class="label">Distribuidor → Ejecutivo</span>
-              <div id="customerQuestion">¿Tienes disponibilidad de la laptop HP 240 G9? Idealmente para entrega desde Monterrey.</div>
-            </div>
-            <div class="bubble executive">
-              <span class="label">Ejecutivo → Asistente IA Comercial</span>
-              <div id="executiveQuery">Consulta disponibilidad de HP 240 G9 por sucursal y sugiere alternativa si no hay stock suficiente.</div>
-            </div>
-            <div class="bubble ai">
-              <span class="label">Asistente IA Comercial → Ejecutivo</span>
-              <div id="assistantAnswer">Disponible: Monterrey 12 unidades, Saltillo 4 unidades. Alternativa sugerida: Lenovo V15, 8 unidades en Monterrey. Validar precio final antes de cotizar.</div>
-              <div class="ai-result">
-                <div class="result-row"><span>Fuente consultada</span><strong id="sourceUsed">Inventario + catálogo</strong></div>
-                <div class="result-row"><span>Acción sugerida</span><strong id="suggestedAction">Responder disponibilidad y ofrecer alternativa</strong></div>
-                <div class="result-row"><span>Registro para dirección</span><strong id="directionRecord">Producto consultado · sucursal · alternativa</strong></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <aside class="panel">
-        <div class="panel-head">
-          <div>
-            <h2>Vista ejecutiva hipotética</h2>
-            <p>Indicadores simulados de un piloto controlado.</p>
-          </div>
-          <span class="pill blue">Agregado</span>
-        </div>
-        <div class="panel-body">
-          <div class="simulated-label">Datos 100% simulados para fines de conversación</div>
-          <div class="cards">
-            <div class="metric"><strong id="m1">428</strong><span>consultas asistidas</span></div>
-            <div class="metric"><strong id="m2">71%</strong><span>consultas resueltas</span></div>
-            <div class="metric"><strong id="m3">36 h</strong><span>tiempo estimado liberado</span></div>
-            <div class="metric"><strong id="m4">18</strong><span>alertas o fricciones</span></div>
-          </div>
-
-          <div class="section-title">Top motivos de consulta</div>
-          <div id="bars" class="bar-list"></div>
-
-          <div class="section-title">Lectura ejecutiva</div>
-          <div id="insights" class="insights"></div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="scope-grid">
-      
-              
-    </section>
-
-    <p class="footer-note">Demo conceptual para conversación ejecutiva. Todos los datos son simulados y deben validarse con fuentes, permisos e integraciones reales de CT.</p>
-  </main>
-
-  <script>
-    const cases = {
-      inventario: {
-        title: "Inventario y disponibilidad por sucursal",
-        subtitle: "Cómo el ejecutivo podría obtener una respuesta rápida sin cambiar la experiencia del distribuidor.",
-        pill: "Bajo riesgo",
-        pillClass: "green",
-        customer: "¿Tienes disponibilidad de la laptop HP 240 G9? Idealmente para entrega desde Monterrey.",
-        query: "Consulta disponibilidad de HP 240 G9 por sucursal y sugiere alternativa si no hay stock suficiente.",
-        answer: "Disponible: Monterrey 12 unidades, Saltillo 4 unidades. Alternativa sugerida: Lenovo V15, 8 unidades en Monterrey. Validar precio final antes de cotizar.",
-        source: "Inventario + catálogo",
-        action: "Responder disponibilidad y ofrecer alternativa",
-        record: "Producto consultado · sucursal · alternativa",
-        metrics: ["428", "71%", "36 h", "18"],
-        bars: [
-          ["Inventario / disponibilidad", 42],
-          ["Estatus de pedido", 26],
-          ["Garantías / seguimiento", 16],
-          ["Alternativas de producto", 10],
-          ["Otros", 6]
-        ],
-        insights: [
-          ["1", "Inventario y disponibilidad concentran 42% de las consultas simuladas del piloto."],
-          ["2", "18 consultas no tuvieron disponibilidad suficiente; esto puede revelar demanda no satisfecha."],
-          ["3", "Monterrey y Guadalajara aparecen como sucursales con mayor presión de consulta."],
-          ["4", "Las alternativas de producto pueden reducir pérdida de oportunidad cuando no hay stock inicial."]
-        ]
-      },
-      pedido: {
-        title: "Estatus de pedido",
-        subtitle: "Seguimiento rápido para disminuir búsquedas manuales y llamadas internas.",
-        pill: "Operativo",
-        pillClass: "amber",
-        customer: "¿Me ayudas a revisar en qué va el pedido 12345? El cliente me está pidiendo actualización.",
-        query: "Consulta estatus del pedido 12345 del distribuidor Grupo Delta y dime si requiere escalamiento.",
-        answer: "Pedido 12345: en preparación para envío. Última actualización: hoy 10:42. ETA estimada: mañana antes de las 14:00. No requiere escalamiento por ahora.",
-        source: "Pedidos + logística",
-        action: "Comunicar ETA y registrar seguimiento",
-        record: "Pedido · etapa · ETA · riesgo",
-        metrics: ["312", "76%", "28 h", "12"],
-        bars: [
-          ["Estatus de pedido", 39],
-          ["Inventario / disponibilidad", 27],
-          ["Entrega / logística", 18],
-          ["Registro de seguimiento", 11],
-          ["Otros", 5]
-        ],
-        insights: [
-          ["1", "Estatus de pedido representa 39% de la carga simulada; puede estar consumiendo tiempo comercial."],
-          ["2", "12 pedidos tuvieron más de 3 consultas de seguimiento, señal de posible fricción operativa."],
-          ["3", "La dirección podría identificar etapas donde se concentra mayor incertidumbre: preparación, envío o entrega."],
-          ["4", "El piloto permitiría distinguir consultas resueltas por información disponible vs. casos que requieren escalamiento."]
-        ]
-      },
-      registro: {
-        title: "Registro de solicitud o seguimiento",
-        subtitle: "Trazabilidad estructurada sin leer conversaciones personales de WhatsApp.",
-        pill: "Trazabilidad",
-        pillClass: "blue",
-        customer: "Te mandé los datos por WhatsApp. ¿Puedes darle seguimiento a mi garantía y avisarme el folio?",
-        query: "Registra solicitud de seguimiento de garantía para Distribuidora Alfa. Producto: impresora térmica. Motivo: falla de impresión.",
-        answer: "Solicitud registrada: SG-2048. Tipo: garantía. Área sugerida: soporte / garantías. Siguiente paso: solicitar comprobante y número de serie. Estatus: pendiente de documentación.",
-        source: "Registro interno / tickets",
-        action: "Generar folio y solicitar datos mínimos",
-        record: "Tipo de solicitud · cliente · área · estatus",
-        metrics: ["186", "64%", "19 h", "34"],
-        bars: [
-          ["Garantías / soporte", 31],
-          ["Estatus de pedido", 24],
-          ["Facturación / comprobante", 18],
-          ["Inventario", 16],
-          ["Otros", 11]
-        ],
-        insights: [
-          ["1", "El registro estructurado permite ver qué temas quedan abiertos, en proceso o vencidos."],
-          ["2", "34 solicitudes abiertas o con datos incompletos muestran dónde se puede mejorar continuidad."],
-          ["3", "Dirección podría ver qué áreas reciben más escalamiento sin leer chats personales."],
-          ["4", "El valor no es vigilancia; es trazabilidad de procesos repetitivos que antes quedaban dispersos."]
-        ]
-      }
-    };
-
-    function setCase(caseId, btn) {
-      const data = cases[caseId];
-      document.querySelectorAll('button.case').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-
-      document.getElementById('scenarioTitle').textContent = data.title;
-      document.getElementById('scenarioSubtitle').textContent = data.subtitle;
-      const pill = document.getElementById('casePill');
-      pill.textContent = data.pill;
-      pill.className = 'pill ' + data.pillClass;
-
-      document.getElementById('customerQuestion').textContent = data.customer;
-      document.getElementById('executiveQuery').textContent = data.query;
-      document.getElementById('assistantAnswer').textContent = data.answer;
-      document.getElementById('sourceUsed').textContent = data.source;
-      document.getElementById('suggestedAction').textContent = data.action;
-      document.getElementById('directionRecord').textContent = data.record;
-
-      document.getElementById('m1').textContent = data.metrics[0];
-      document.getElementById('m2').textContent = data.metrics[1];
-      document.getElementById('m3').textContent = data.metrics[2];
-      document.getElementById('m4').textContent = data.metrics[3];
-
-      const bars = document.getElementById('bars');
-      bars.innerHTML = '';
-      data.bars.forEach(([label, value]) => {
-        const el = document.createElement('div');
-        el.className = 'bar-item';
-        el.innerHTML = `
-          <div class="bar-top"><span>${label}</span><span>${value}%</span></div>
-          <div class="track"><div class="fill" style="width: ${value}%"></div></div>
-        `;
-        bars.appendChild(el);
-      });
-
-      const insights = document.getElementById('insights');
-      insights.innerHTML = '';
-      data.insights.forEach(([num, text]) => {
-        const el = document.createElement('div');
-        el.className = 'insight';
-        el.innerHTML = `<i>${num}</i><span>${text}</span>`;
-        insights.appendChild(el);
-      });
-    }
-
-    setCase('inventario');
-  </script>
+const coverageBars = [
+["Pedidos, logística, entregas y fletes", 9, 23.7],
+["Inventario, disponibilidad y abastecimiento", 6, 15.8],
+["Producto, compatibilidad y comparativas", 5, 13.2],
+["Garantías y postventa", 5, 13.2],
+["Compra en línea y procesos digitales", 4, 10.5],
+["Ejecutivo, contacto y datos administrativos", 4, 10.5],
+["Precios y condiciones comerciales", 3, 7.9],
+["Pendientes de contextualización", 2, 5.3]
+];
+function setCase(caseId, btn) {
+const data = cases[caseId];
+document.querySelectorAll('button.case').forEach(b => b.classList.remove('active'));
+if (btn) btn.classList.add('active');
+document.getElementById('scenarioTitle').textContent = data.title;
+document.getElementById('scenarioSubtitle').textContent = data.subtitle;
+const pill = document.getElementById('casePill');
+pill.textContent = data.pill;
+pill.className = 'pill ' + data.pillClass;
+document.getElementById('customerQuestion').textContent = data.customer;
+document.getElementById('executiveQuery').textContent = data.query;
+document.getElementById('assistantAnswer').textContent = data.answer;
+document.getElementById('sourceUsed').textContent = data.source;
+document.getElementById('suggestedAction').textContent = data.action;
+document.getElementById('directionRecord').textContent = data.record;
+document.getElementById('m1').textContent = data.metrics[0];
+document.getElementById('m2').textContent = data.metrics[1];
+document.getElementById('m3').textContent = data.metrics[2];
+document.getElementById('m4').textContent = data.metrics[3];
+const bars = document.getElementById('bars');
+bars.innerHTML = '';
+coverageBars.forEach(([label, count, pct]) => {
+const el = document.createElement('div');
+el.className = 'bar-item';
+el.innerHTML = `
+<div class="bar-top"><span>${label}</span><span>${count} de 38</span></div>
+<div class="track"><div class="fill" style="width: ${pct}%"></div></div>
+`;
+bars.appendChild(el);
+});
+const insights = document.getElementById('insights');
+insights.innerHTML = '';
+data.insights.forEach(([num, text]) => {
+const el = document.createElement('div');
+el.className = 'insight';
+el.innerHTML = `<i>${num}</i><span>${text}</span>`;
+insights.appendChild(el);
+});
+}
+setCase('inventario');
+</script>
 </body>
 </html>
